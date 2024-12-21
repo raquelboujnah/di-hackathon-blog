@@ -1,6 +1,6 @@
 function searchPosts() {
     const input = document.getElementById("searchInput");
-    const filter = input.value.trim().toLowerCase();  // Trim input to avoid accidental spaces
+    const filter = input.value.trim().toLowerCase(); // Trim input to avoid accidental spaces
     const posts = document.querySelectorAll(".post");
     const noResultsMessage = document.getElementById("noResultsMessage");
     let visiblePostCount = 0;

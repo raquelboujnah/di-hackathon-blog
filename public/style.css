@@ -63,26 +63,34 @@ main {
     margin-top: 10px;
 }
 
-.post h2 {
-    margin-bottom: 10px;
-}
-
 /* Image styling */
 .post-image {
     width: 100%;
     max-width: 400px;
     height: auto;
     border-radius: 8px;
-    margin-bottom: 15px; /* Space between image and text */
+    margin-bottom: 15px;
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
-#noResultsMessage {
+/* Read More button */
+.read-more {
+    display: block;
+    background-color: #474E93;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
     text-align: center;
-    font-size: 18px;
-    color: red;
+    cursor: pointer;
+}
+
+.read-more:hover {
+    background-color: #3a407b;
 }
 
 .submit-container {
@@ -101,7 +109,7 @@ main {
 }
 
 .submit-container button:hover {
-    background-color: #474E93;
+    background-color: #3a407b;
 }
 
 @media (max-width: 600px) {

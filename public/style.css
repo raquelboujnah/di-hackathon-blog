@@ -68,6 +68,7 @@ main {
     width: 100%;
     max-width: 400px;
     height: auto;
+    max-height: 300px;
     border-radius: 8px;
     margin-bottom: 15px;
     display: block;

@@ -1,34 +1,37 @@
-const url = "/post-data"
+// Fetch request parameters
+const url = "/post-data";
 let options = {
     method: "GET",
     headers: {
         "content_type": "application/json"
     }
-}
+};
 
+// Populate the home page with all the posts
 async function getPosts(url, options) {
     try {
-        let result = await fetch(url,options)
-        let data = await result.json()
-        console.log(data)
+        let result = await fetch(url,options);
+        let data = await result.json();
+        // Append each post with correct html structure to the #blogPosts section
         data.forEach(post => {
             $("#blogPosts").append(`
         <article class="post">
-            <img src="assets/default-cover.jpg" alt="Image for ${post.title}" class="post-image">
+            <img src="${post.cover_image ? post.cover_image : 'assets/default-cover.jpg'}" alt="Image for ${post.title}" class="post-image">
             <h2 class="post-title">${post.title}</h2>
             <p class="post-content">${post.content}</p>
             <button class="read-more" onclick="window.location.href='post/${post.id}'">Read More</button>
         </article>
-            `)
+            `);
         });
 
     } catch (err){
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
-getPosts(url,options)
+getPosts(url,options);
 
+// Simple search fuctionality by hiding posts that title do not meet filter
 function searchPosts() {
     const input = document.getElementById("searchInput");
     const filter = input.value.trim().toLowerCase();
@@ -37,16 +40,19 @@ function searchPosts() {
     let visiblePostCount = 0;
 
     posts.forEach((post) => {
+        // Ensuring both the comparing and post title is in lower case
         const title = post.querySelector(".post-title").textContent.toLowerCase();
         if (title.includes(filter)) {
             post.style.display = "block";
             visiblePostCount++;
         } else {
+            // Hide post if title does not include filter
             post.style.display = "none";
         }
     });
 
     if (visiblePostCount === 0 && filter !== "") {
+        // Display the no results message if the num of visible posts is 0
         noResultsMessage.style.display = "block";
     } else {
         noResultsMessage.style.display = "none";
@@ -61,21 +67,7 @@ document.querySelectorAll(".post-content").forEach((content) => {
     }
 });
 
-// function handleSubmit(event) {
-//     event.preventDefault(); 
-
-//     const form = document.getElementById("blogPostForm");
-//     const formData = new FormData(form);
-
-//     console.log("Form Submitted:");
-//     for (let [key, value] of formData.entries()) {
-//         console.log(`${key}:`, value);
-//     }
-
-//     alert("Blog post submitted successfully!");
-//     form.reset(); 
-// }
-
+// A post request to send submitted form data to the server
 async function handleSubmit(event) {
     event.preventDefault();
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const path = require('path')
+const path = require('path');
 
 app.use(express.json());
 
@@ -9,10 +9,13 @@ const postgres = require('postgres');
 require('dotenv').config();
 
 app.use(cors());
-app.use('/', express.static(__dirname+'/public'))
+// Setting the static files in public to display through the server
+app.use('/', express.static(__dirname+'/public'));
 
+// Quickly change port for when running the server
 const port = 3105;
 
+// Setting up EJS
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
@@ -20,6 +23,7 @@ app.listen(port, () => {
     console.log(`Run on port ${port}`)
 })
 
+// Importing database details from the .env file
 const {
     PGHOST,
     PGDATABASE,
@@ -36,15 +40,13 @@ const knex = require('knex')({
         password: PGPASSWORD,
         database: PGDATABASE,
         ssl: { rejectUnauthorized: false },
-        // ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     },
 });
 
+// Uses KNEX to query db and fetch all items from `posts` table
 async function viewBlogTable() {
     try {
-        console.log('Fetching blog table...');
         const blogs = await knex.select('*').from('posts');
-        // console.log('Blogs fetched:', blogs);
         return blogs;
     } catch (error) {
         console.error('Error fetching blog table:', error);
@@ -54,24 +56,7 @@ async function viewBlogTable() {
 
 viewBlogTable();
 
-// async function insertValueToDb() {
-//     try {
-//         const insertValue = await knex('posts').insert({
-//             title: 'from vs code',
-//             publish_date: '2024-12-21',
-//             content: 'This was inserted through vs code',
-//             author: 'Eli from VS Code'
-//         })
-//     } catch (error) {
-//         console.error('Error inserting value to the blog table:', error);
-//     } finally {
-//         knex.destroy();
-//     }
-// }
-
-// insertValueToDb()
-
-
+// Displays the fetched posts as fetchable api
 app.get('/post-data', async (req, res) => {
     try {
         const blogPosts = await viewBlogTable();
@@ -82,26 +67,31 @@ app.get('/post-data', async (req, res) => {
     }
 });
 
+// Dynamic id parameter to create the page for a post and load correct details by id
 app.get('/post/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await knex('posts').where({ id }).first(); // Query for the specific post
+        // Query for the specific post using id in param
+        const post = await knex('posts').where({ id }).first();
         
         if (!post) {
+            // Display 404 notice if no post with that id
             return res.status(404).send('Post not found');
         }
-        // res.json(post); // Pass the post data to the EJS template
-
-        res.render('post', { post }); // Pass the post data to the EJS template
+        // Render the post data using the EJS template in views/post.ejs
+        res.render('post', { post });
     } catch (error) {
         console.error('Error fetching post:', error);
         res.status(500).send('Error fetching the post');
     }
 });
 
+// Route to handle post requests for new post submissions
 app.post('/submit-post', async (req, res) => {
+    // Extracting the relevant data from the request body
     const { title, publish_date, author, cover_image, content, } = req.body;
 
+    // Insert the data into databse using KNEX query (with error handling)
     try {
         const result = await knex('posts').insert({
             title: title,

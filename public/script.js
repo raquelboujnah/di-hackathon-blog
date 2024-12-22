@@ -23,6 +23,7 @@ async function getPosts(url, options) {
         </article>
             `);
         });
+        trimPostDetails()
 
     } catch (err){
         console.log(err);
@@ -60,12 +61,14 @@ function searchPosts() {
 }
 
 // Limit content to 150 characters
-document.querySelectorAll(".post-content").forEach((content) => {
-    const fullText = content.textContent.trim();
-    if (fullText.length > 150) {
-        content.textContent = fullText.substring(0, 150) + "...";
-    }
-});
+function trimPostDetails(){
+    document.querySelectorAll(".post-content").forEach((content) => {
+        const fullText = content.textContent.trim();
+        if (fullText.length > 150) {
+            content.textContent = fullText.substring(0, 150) + "...";
+        }
+    });
+}
 
 // A post request to send submitted form data to the server
 async function handleSubmit(event) {
